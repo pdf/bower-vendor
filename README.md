@@ -34,16 +34,17 @@ Files are vendored based on file extension under:
 `vendor/assets/(javascripts|stylesheets|images|media)/[package-name]`
 
 Currently supported file extensions are:
-* `javascripts`: .js | .coffee
-* `stylesheets`: .css | .scss | .sass | .less
-* `images`: .gif | .png | .jpg | .svg
-* `media`: .\* (everything else)
+* `javascripts`: `.js` `.coffee`
+* `stylesheets`: `.css` `.scss` `.sass` `.less`
+* `images`: `.gif` `.png` `.jpg` `.svg`
+* `media`: `.\*` (everything else)
 
 The following generators are available:
 
 ### Available Generators
-    rails generate bower_vendor:install [options]
-     
+
+`rails generate bower_vendor:install [options]`
+
     Options:
       [--update]           # Update bower assets (ie - `bower update`)
       [--skip-git-ignore]  # Add vendored bower asset package directories to .gitignore
@@ -59,8 +60,8 @@ The following generators are available:
     Vendor bower assets based on bower.json
 
 
-    rails generate bower_vendor:clean [options]
-     
+`rails generate bower_vendor:clean [options]`
+
     Options:
       [--force]  # Delete vendored bower assets without prompting
      
