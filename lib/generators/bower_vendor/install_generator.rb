@@ -1,0 +1,65 @@
+class BowerVendor::InstallGenerator < Rails::Generators::Base
+  source_root Rails.root
+
+  attr_accessor :utils
+
+  class_option :update, type: :boolean, desc: 'Update bower assets (ie - `bower update`)'
+  class_option :skip_git_ignore, type: :boolean, desc: 'Add vendored bower asset package directories to .gitignore'
+  class_option :force_clean, type: :boolean, desc: 'Clean vendored bower assets without prompting'
+  class_option :skip_clean, type: :boolean, desc: 'Skip cleaning vendored bower assets'
+  class_option :include_dev_dependencies, type: :boolean, default: false, desc: 'Include bower devDependencies'
+  desc 'Vendor bower assets based on bower.json'
+  def bower_install
+    if !options.skip_clean? and Dir.exist? BowerVendor::BOWER_ROOT
+      generate options.force_clean? ? 'bower_vendor:clean --force' : 'bower_vendor:clean'
+    end
+
+    action = options.update? ? 'update' : 'install'
+    action << ' --production' unless options.include_dev_dependencies?
+    say_status :run, "bower #{action}"
+    `bower #{action}`
+
+    @utils = BowerVendor::Utils.new
+
+    utils.merged_paths.each do |package, paths|
+      append_file '.gitignore', "\n# Vendored bower package '#{package}'\n" unless options.skip_git_ignore?
+      case paths
+      when Hash
+        paths.each do |source, dest|
+          vendor_asset(package, File.join(BowerVendor::BOWER_ROOT, package, source), dest)
+        end
+      when Array
+        paths.each do |source|
+          vendor_asset(package, File.join(BowerVendor::BOWER_ROOT, package, source))
+        end
+      when String
+        vendor_asset(package, paths)
+      else
+        raise ArgumentError, "Paths must be either Hash, Array or String, received: #{paths.class}"
+      end
+    end
+  end
+
+  private
+  def vendor_asset(package, source, dest=nil)
+    file_ext = File.extname(source)
+    case file_ext
+    when '.js', '.coffee'
+      prefix = 'javascripts'
+    when '.css', '.scss', '.sass', '.less'
+      prefix = 'stylesheets'
+    when '.gif', '.png', '.jpg', '.svg'
+      prefix = 'images'
+    else
+      prefix = 'media'
+    end
+
+    if dest
+      dest = utils.prefixed_path(package, prefix, dest)
+    else
+      dest = utils.prefixed_path(package, prefix, File.basename(source))
+    end
+    append_file '.gitignore', "/#{File.join('vendor', 'assets', prefix, package)}\n" unless options.skip_git_ignore?
+    copy_file(source, dest)
+  end
+end
