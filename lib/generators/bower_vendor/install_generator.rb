@@ -35,13 +35,28 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
       when String
         vendor_asset(package, paths)
       else
-        raise ArgumentError, "Paths must be either Hash, Array or String, received: #{paths.class}"
+        raise Thor::Error, set_color("Paths must be either Hash, Array or String, received: #{paths.class}", :red, :bold)
       end
     end
   end
 
   private
   def vendor_asset(package, source, dest=nil)
+    if source == File.join(BowerVendor::BOWER_ROOT, package)
+      err = <<-eos
+        The '#{package}' package has a missing 'main' attribute, and cannot be handled automatically.
+        Please encourage the maintainer to fix the package, and in the mean time, try overriding the
+        sources in your 'bower.json'.
+      eos
+      raise Thor::Error, set_color(err, :red, :bold)
+    elsif File.directory? source
+      err = <<-eos
+        The '#{package}' package has a broken 'main' attribute that specifies a directory (#{source}).  
+        Please encourage the maintainer to fix the package, and in the mean time, try overriding the
+        sources in your 'bower.json'.
+      eos
+      raise Thor::Error, set_color(err, :red, :bold)
+    end
     file_ext = File.extname(source)
     case file_ext
     when '.js', '.coffee'
