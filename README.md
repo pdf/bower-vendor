@@ -37,7 +37,7 @@ Currently supported file extensions are:
 * `javascripts`: `.js` `.coffee`
 * `stylesheets`: `.css` `.scss` `.sass` `.less`
 * `images`: `.gif` `.png` `.jpg` `.svg`
-* `media`: `.\*` (everything else)
+* `media`: `.*` (everything else)
 
 The following generators are available:
 
