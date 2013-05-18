@@ -119,6 +119,12 @@ to our project space:
 
 Much nicer.
 
+Simply `require` them in your `application.js` or `application.css`:
+
+```javascript
+//= require 'widget/widget'
+```
+
 ### Advanced bower.json
 (Hat-tip to [bower-installer](https://github.com/blittle/bower-installer) for the inspiration)
 
