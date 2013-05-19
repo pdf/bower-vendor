@@ -16,7 +16,15 @@ class BowerVendor::Utils
     end
   end
 
-  def prefixed_path(package, prefix, path)
+  def prefixed_source(package, path)
+    if path =~ /^#{BowerVendor::BOWER_ROOT}/
+      path
+    else
+      File.join(BowerVendor::BOWER_ROOT, package, path) 
+    end
+  end
+
+  def prefixed_dest(package, prefix, path)
     File.join('vendor', 'assets', prefix, package, path)
   end
 

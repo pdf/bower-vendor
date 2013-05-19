@@ -26,11 +26,11 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
       case paths
       when Hash
         paths.each do |source, dest|
-          vendor_asset(package, File.join(BowerVendor::BOWER_ROOT, package, source), dest)
+          vendor_asset(package, utils.prefixed_source(package, source), dest)
         end
       when Array
         paths.each do |source|
-          vendor_asset(package, File.join(BowerVendor::BOWER_ROOT, package, source))
+          vendor_asset(package, utils.prefixed_source(package, source))
         end
       when String
         vendor_asset(package, paths)
@@ -70,9 +70,9 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
     end
 
     if dest
-      dest = utils.prefixed_path(package, prefix, dest)
+      dest = utils.prefixed_dest(package, prefix, dest)
     else
-      dest = utils.prefixed_path(package, prefix, File.basename(source))
+      dest = utils.prefixed_dest(package, prefix, File.basename(source))
     end
     append_file '.gitignore', "/#{File.join('vendor', 'assets', prefix, package)}\n" unless options.skip_git_ignore?
     copy_file(source, dest)
