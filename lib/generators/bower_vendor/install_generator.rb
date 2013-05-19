@@ -10,19 +10,21 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
   class_option :include_dev_dependencies, type: :boolean, default: false, desc: 'Include bower devDependencies'
   desc 'Vendor bower assets based on bower.json'
   def bower_install
-    if !options.skip_clean? and Dir.exist? BowerVendor::BOWER_ROOT
-      generate options.force_clean? ? 'bower_vendor:clean --force' : 'bower_vendor:clean'
-    end
+    generate 'bower_vendor:clean --cached' if !options.skip_clean?
 
     action = options.update? ? 'update' : 'install'
-    action << ' --production' unless options.include_dev_dependencies?
+    action << ' --production' if !options.include_dev_dependencies?
     say_status :run, "bower #{action}"
     `bower #{action}`
+
+    if !options.skip_clean?
+      generate options.force_clean? ? 'bower_vendor:clean --force' : 'bower_vendor:clean'
+    end
 
     @utils = BowerVendor::Utils.new
 
     utils.merged_paths.each do |package, paths|
-      append_file '.gitignore', "\n# Vendored bower package '#{package}'\n" unless options.skip_git_ignore?
+      append_file '.gitignore', "\n# Vendored bower package '#{package}'\n" if !options.skip_git_ignore?
       case paths
       when Hash
         paths.each do |source, dest|
@@ -38,6 +40,7 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
         raise Thor::Error, set_color("Paths must be either Hash, Array or String, received: #{paths.class}", :red, :bold)
       end
     end
+    generate 'bower_vendor:clean --cached' if !options.skip_clean?
   end
 
   private
@@ -74,7 +77,7 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
     else
       dest = utils.prefixed_dest(package, prefix, File.basename(source))
     end
-    append_file '.gitignore', "/#{File.join('vendor', 'assets', prefix, package)}\n" unless options.skip_git_ignore?
+    append_file '.gitignore', "/#{File.join('vendor', 'assets', prefix, package)}\n" if !options.skip_git_ignore?
     copy_file(source, dest)
   end
 end

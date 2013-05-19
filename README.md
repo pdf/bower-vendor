@@ -46,10 +46,11 @@ The following generators are available:
 `rails generate bower_vendor:install [options]`
 
     Options:
-      [--update]           # Update bower assets (ie - `bower update`)
-      [--skip-git-ignore]  # Add vendored bower asset package directories to .gitignore
-      [--force-clean]      # Clean vendored bower assets without prompting
-      [--skip-clean]       # Skip cleaning vendored bower assets
+      [--update]                    # Update bower assets (ie - `bower update`)
+      [--skip-git-ignore]           # Add vendored bower asset package directories to .gitignore
+      [--force-clean]               # Clean vendored bower assets without prompting
+      [--skip-clean]                # Skip cleaning vendored bower assets
+      [--include-dev-dependencies]  # Include bower devDependencies
      
     Runtime options:
       -f, [--force]    # Overwrite files that already exist
@@ -59,11 +60,11 @@ The following generators are available:
      
     Vendor bower assets based on bower.json
 
-
 `rails generate bower_vendor:clean [options]`
 
     Options:
-      [--force]  # Delete vendored bower assets without prompting
+      [--force]   # Delete vendored bower assets without prompting
+      [--cached]  # Delete only the bower cache from tmp/bower_components
      
     Runtime options:
       -p, [--pretend]  # Run but do not make any changes
