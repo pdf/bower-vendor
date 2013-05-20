@@ -5,7 +5,10 @@ class BowerVendor::CleanGenerator < Rails::Generators::Base
   class_option :cached, type: :boolean, desc: "Delete only the bower cache from #{BowerVendor::BOWER_ROOT}"
   desc 'Cleans bower assets (CAUTION: Vendored asset directories for all bower packages will be deleted!)'
   def clean_packages
-    return false unless Dir.exist? BowerVendor::BOWER_ROOT
+    unless Dir.exist? BowerVendor::BOWER_ROOT
+      say_status :run, 'bower install --production'
+      `bower install --production`
+    end
     if !options.cached?
       @utils = BowerVendor::Utils.new
       utils.merged_paths.keys.each do |package|
