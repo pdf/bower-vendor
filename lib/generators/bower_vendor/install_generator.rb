@@ -34,7 +34,7 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
           vendor_asset(package, utils.prefixed_source(package, source))
         end
       when String
-        vendor_asset(package, paths)
+        vendor_asset(package, utils.prefixed_source(package, paths))
       else
         raise Thor::Error, set_color("Paths must be either Hash, Array or String, received: #{paths.class}", :red, :bold)
       end
