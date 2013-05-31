@@ -112,8 +112,8 @@ reference in our application.  It might look something like this:
     components/widgets/.ilikedonuts
 
 However, if we instead vendor the bower package by executing
-`rails g bower_vendor:install`, we end up with just the following files added
-to our project space:
+`rails g bower_vendor:install --force-clean`, we end up with just the following
+files added to our project space:
 
     vendor/assets/javascripts/widgets/widgets.js
     vendor/assets/stylesheets/widgets/widgets.css
@@ -123,7 +123,7 @@ Much nicer.
 Simply `require` them in your `application.js` or `application.css`:
 
 ```javascript
-//= require 'widget/widget'
+//= require 'widgets/widgets'
 ```
 
 ### Advanced bower.json
