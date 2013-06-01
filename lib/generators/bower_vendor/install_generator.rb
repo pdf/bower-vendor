@@ -47,16 +47,20 @@ class BowerVendor::InstallGenerator < Rails::Generators::Base
       err = <<-eos
         The '#{package}' package has a missing 'main' attribute, and cannot be handled automatically.
         Please encourage the maintainer to fix the package, and in the mean time, try overriding the
-        sources in your 'bower.json'.
+        sources in your 'bower.json' with one of more of the following files.\n
       eos
-      raise Thor::Error, set_color(err, :red, :bold)
+      err = set_color(err, :red, :bold)
+      err << set_color(Dir.glob(File.join(source, '**', '*')).map{|p| p.gsub(/#{source + File::SEPARATOR}/, "\t")}.join("\n"), :cyan)
+      raise Thor::Error, err
     elsif File.directory? source
       err = <<-eos
         The '#{package}' package has a broken 'main' attribute that specifies a directory (#{source}).  
         Please encourage the maintainer to fix the package, and in the mean time, try overriding the
-        sources in your 'bower.json'.
+        sources in your 'bower.json' with one of more of the following files.
       eos
-      raise Thor::Error, set_color(err, :red, :bold)
+      err = set_color(err, :red, :bold)
+      err << set_color(Dir.glob(File.join(source, '**', '*')).map{|p| p.gsub(/#{source + File::SEPARATOR}/, "\t")}.join("\n"), :cyan)
+      raise Thor::Error, err
     end
     file_ext = File.extname(source)
     case file_ext
