@@ -1,3 +1,7 @@
+# DEPRECATED
+
+I recommend using [rails-assets](https://rails-assets.org) instead.
+
 # BowerVendor
 
 Vendor the bower assets you want for Ruby on Rails.  Inspired by [bower-installer](https://github.com/blittle/bower-installer).
